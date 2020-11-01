@@ -8,6 +8,7 @@ CSI = '\033['
 OSC = '\033]'
 BEL = '\a'
 
+from enum import Enum
 
 def code_to_chars(code):
     return CSI + str(code) + 'm'
@@ -28,9 +29,15 @@ class AnsiCodes(object):
         # Upon instantiation we define instance attributes, which are the same
         # as the class attributes but wrapped with the ANSI escape sequence
         for name in dir(self):
+            #print(name)
             if not name.startswith('_'):
                 value = getattr(self, name)
                 setattr(self, name, code_to_chars(value))
+    
+    def __getattribute__(self, name: str) -> str:
+        print("getting")
+        return super().__getattribute__(name)
+
 
 
 class AnsiCursor(object):
@@ -47,6 +54,25 @@ class AnsiCursor(object):
 
 
 class AnsiFore(AnsiCodes):
+    BLACK: str
+    RED: str
+    GREEN: str
+    YELLOW: str
+    BLUE: str
+    MAGENTA: str
+    CYAN: str
+    WHITE: str
+    RESET: str
+
+    LIGHTBLACK_EX: str
+    LIGHTRED_EX: str
+    LIGHTGREEN_EX: str
+    LIGHTYELLOW_EX: str
+    LIGHTBLUE_EX: str
+    LIGHTMAGENTA_EX: str
+    LIGHTCYAN_EX: str
+    LIGHTWHITE_EX: str
+
     BLACK           = 30
     RED             = 31
     GREEN           = 32
@@ -68,7 +94,48 @@ class AnsiFore(AnsiCodes):
     LIGHTWHITE_EX   = 97
 
 
+ansi_fore_dict = dict(
+    BLACK           = 30,
+    RED             = 31,
+    GREEN           = 32,
+    YELLOW          = 33,
+    BLUE            = 34,
+    MAGENTA         = 35,
+    CYAN            = 36,
+    WHITE           = 37,
+    RESET           = 39,
+
+    # These are fairly well supported, but not part of the standard.
+    LIGHTBLACK_EX   = 90,
+    LIGHTRED_EX     = 91,
+    LIGHTGREEN_EX   = 92,
+    LIGHTYELLOW_EX  = 93,
+    LIGHTBLUE_EX    = 94,
+    LIGHTMAGENTA_EX = 95,
+    LIGHTCYAN_EX    = 96,
+    LIGHTWHITE_EX   = 97
+)
+
 class AnsiBack(AnsiCodes):
+    BLACK: str
+    RED: str
+    GREEN: str
+    YELLOW: str
+    BLUE: str
+    MAGENTA: str
+    CYAN: str
+    WHITE: str
+    RESET: str
+
+    LIGHTBLACK_EX: str
+    LIGHTRED_EX: str
+    LIGHTGREEN_EX: str
+    LIGHTYELLOW_EX: str
+    LIGHTBLUE_EX: str
+    LIGHTMAGENTA_EX: str
+    LIGHTCYAN_EX: str
+    LIGHTWHITE_EX: str
+
     BLACK           = 40
     RED             = 41
     GREEN           = 42
@@ -91,10 +158,16 @@ class AnsiBack(AnsiCodes):
 
 
 class AnsiStyle(AnsiCodes):
+    BRIGHT: str
+    DIM: str
+    NORMAL: str
+    RESET_ALL: str
+
     BRIGHT    = 1
     DIM       = 2
     NORMAL    = 22
     RESET_ALL = 0
+
 
 Fore   = AnsiFore()
 Back   = AnsiBack()
